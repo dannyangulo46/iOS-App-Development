@@ -18,20 +18,34 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     @IBOutlet weak var bottomMenu: UIView!
     
+    var originalImage: UIImage?
+    var imageFiltered: ImageProcessor?
     
+    // MARK: - ViewController LifeCycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         
         secondaryMenu.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
         secondaryMenu.translatesAutoresizingMaskIntoConstraints = false
+        
+        originalImage = imageView.image
+        imageFiltered = ImageProcessor(imageInput: imageView.image!)
 
     }
 
+    
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    
+    // MARK: - Actions when button are pressed
+    
+    
 
     @IBAction func onNewPhoto(sender: UIButton) {
         
@@ -79,6 +93,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         dismissViewControllerAnimated(true, completion: nil)
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
             imageView.image = image
+            originalImage = image
+            imageFiltered?.imageInRGBA = RGBAImage(image: originalImage!)
         }
     }
     
@@ -87,6 +103,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     
+    // MARK: - Show Filters and apply filters when buttons are pressed
     
     @IBAction func onFilter(sender: UIButton) {
         
@@ -98,10 +115,20 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             showSecondaryMenu()
             sender.selected = true
         }
+       
+    }
+
+    
+    
+    @IBAction func onRedFilter(sender: UIButton) {
+        
+        imageView.image = imageFiltered?.applyFilter("blue")
         
         
     }
-
+    
+    
+    
     
     @IBAction func onShare(sender: UIButton) {
         let activityController = UIActivityViewController(activityItems: [imageView.image!], applicationActivities: nil)
