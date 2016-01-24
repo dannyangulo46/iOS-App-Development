@@ -19,6 +19,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBOutlet weak var bottomMenu: UIView!
     
     var originalImage: UIImage?
+    var tempImage: UIImage?
     var imageFiltered: ImageProcessor?
     
     // MARK: - ViewController LifeCycle
@@ -43,7 +44,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     
-    // MARK: - Actions when button are pressed
+    // MARK: - Actions when buttons are pressed
     
     
 
@@ -102,6 +103,22 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         dismissViewControllerAnimated(true, completion: nil)
     }
     
+    // MARK: - Action when compare button is pressed
+    
+    
+    @IBAction func onCompare(sender: UIButton) {
+        if (sender.selected) {
+        
+            imageView.image = tempImage!
+            sender.selected = false
+        } else {
+            tempImage = imageView.image
+            imageView.image = originalImage
+            sender.selected = true
+        }
+        
+    }
+        
     
     // MARK: - Show Filters and apply filters when buttons are pressed
     
@@ -122,9 +139,27 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     @IBAction func onRedFilter(sender: UIButton) {
         
-        imageView.image = imageFiltered?.applyFilter("blue")
+        imageView.image = imageFiltered?.applyFilter("red")
+     }
+    
+    @IBAction func onGreenFilter(sender: UIButton) {
         
+         imageView.image = imageFiltered?.applyFilter("green")
+     }
+    
+    @IBAction func onBlueFilter(sender: UIButton) {
         
+         imageView.image = imageFiltered?.applyFilter("blue")
+    }
+    
+    @IBAction func onGrayFilter(sender: UIButton) {
+        
+        imageView.image = imageFiltered?.applyFilter("gray")
+    }
+    
+    @IBAction func onInvertFilter(sender: UIButton) {
+        
+        imageView.image = imageFiltered?.applyFilter("invert")
     }
     
     

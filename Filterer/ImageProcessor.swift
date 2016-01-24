@@ -15,68 +15,111 @@ class ImageProcessor {
     
     internal var imageInRGBA: RGBAImage?
     
+    var totalRed = 0
+    var totalGreen = 0
+    var totalBlue = 0
+    
+    
+    var avgRed: Int = 0
+    var avgGreen: Int = 0
+    var avgBlue: Int = 0
+    var pixelsCount: Int = 0
+    
+    
+    
     // initialization of class
     init(imageInput: UIImage){
         
-        imageInRGBA = RGBAImage(image: imageInput)!
+        imageInRGBA = RGBAImage(image: imageInput)
+        self.calculateRGBAverages()
+        
     }
+    
+    
     
     // method that applies the filters at default intensity using String input (to every pixel of image)
     func applyFilter(filter: String) -> UIImage{
         switch filter{
-        case "blue":
-            var totalBlue = 0
-            let avgBlue: Int
-            let pixelCount: Int
-            for y in 0..<imageInRGBA!.height{
-                for x in 0..<imageInRGBA!.width{
-                    let arrayIndex = y * imageInRGBA!.width + x
-                    var selectedPixel = imageInRGBA!.pixels[arrayIndex]
-                    totalBlue += Int(selectedPixel.blue)
+        case "red":
+           
+//            for y in 0..<imageInRGBA!.height{
+//                for x in 0..<imageInRGBA!.width{
+//                    let index = y * imageInRGBA!.width + x
+//                    var pixel = imageInRGBA!.pixels[index]
+//                    let redDiff = Int(pixel.red) - avgRed
+//                    if (redDiff>0){
+//                        pixel.red = UInt8(max(0,min(255,avgRed+redDiff*5)))
+//                        imageInRGBA!.pixels[index] = pixel
+//                    }
+//                }
+//            }
+           
+            iterateAndApplyFilter() {
+                var pixel = $3
+                let redDiff = Int (pixel.red) - self.avgRed
+                if (redDiff>0) {
+                    pixel.red = UInt8(max(0,min(255, self.avgRed+redDiff*5)))
+                    self.imageInRGBA!.pixels[$2] = pixel
                 }
+                
             }
-            pixelCount = imageInRGBA!.width * imageInRGBA!.height   // total number of pixels in the image
-            avgBlue = totalBlue / pixelCount
-            for y in 0..<imageInRGBA!.height{
-                for x in 0..<imageInRGBA!.width{
-                    let arrayIndex = y * imageInRGBA!.width + x
-                    var selectedPixel = imageInRGBA!.pixels[arrayIndex]
-                    let blueDiff = Int(selectedPixel.blue) - avgBlue
-                    if (blueDiff>0){
-                        selectedPixel.blue = UInt8(max(0,min(255,avgBlue+blueDiff*5)))
-                        imageInRGBA!.pixels[arrayIndex] = selectedPixel
-                    }
+        
+        case "green":
+            
+            iterateAndApplyFilter() {
+                var pixel = $3
+                let greenDiff = Int (pixel.green) - self.avgGreen
+                if (greenDiff>0) {
+                    pixel.green = UInt8(max(0,min(255, self.avgGreen+greenDiff*5)))
+                    self.imageInRGBA!.pixels[$2] = pixel
                 }
+                
             }
-        case "grayscale":
-            for y in 0..<imageInRGBA!.height{
-                for x in 0..<imageInRGBA!.width{
-                    let arrayIndex = y * imageInRGBA!.width + x
-                    var selectedPixel = imageInRGBA!.pixels[arrayIndex]
-                    let weightedAvgRed = Double(selectedPixel.red) * 0.21
-                    let weightedAvgGreen = Double(selectedPixel.green) * 0.72
-                    let weightedAvgBlue = Double(selectedPixel.blue) * 0.07
-                    let avgValue = weightedAvgRed + weightedAvgGreen + weightedAvgBlue / 3
-                    selectedPixel.red = UInt8(max(0,min(255,avgValue)))
-                    selectedPixel.green = UInt8(max(0,min(255,avgValue)))
-                    selectedPixel.blue = UInt8(max(0,min(255,avgValue)))
-                    imageInRGBA!.pixels[arrayIndex] = selectedPixel
+   
+            
+         case "blue":
+            
+            iterateAndApplyFilter() {
+                var pixel = $3
+                let blueDiff = Int (pixel.blue) - self.avgBlue
+                if (blueDiff>0) {
+                    pixel.blue = UInt8(max(0,min(255, self.avgBlue+blueDiff*5)))
+                    self.imageInRGBA!.pixels[$2] = pixel
                 }
+                
             }
+            
+            
+            
+        case "gray":
+            
+            
+            iterateAndApplyFilter() {
+                var pixel = $3
+                let weightedAvgRed = Double(pixel.red) * 0.21
+                let weightedAvgGreen = Double(pixel.green) * 0.72
+                let weightedAvgBlue = Double(pixel.blue) * 0.07
+                let avgValue = weightedAvgRed + weightedAvgGreen + weightedAvgBlue / 3
+                pixel.red = UInt8(max(0,min(255,avgValue)))
+                pixel.green = UInt8(max(0,min(255,avgValue)))
+                pixel.blue = UInt8(max(0,min(255,avgValue)))
+                self.imageInRGBA!.pixels[$2] = pixel
+                
+            }
+        
+            
         case "invert":
-            for y in 0..<imageInRGBA!.height{
-                for x in 0..<imageInRGBA!.width{
-                    let arrayIndex = y * imageInRGBA!.width + x
-                    var selectedPixel = imageInRGBA!.pixels[arrayIndex]
-                    let newRed = 255 - Int(selectedPixel.red)
-                    let newGreen = 255 - Int(selectedPixel.green)
-                    let newBlue = 255 - Int(selectedPixel.blue)
-                    selectedPixel.red = UInt8(max(0,min(255,newRed)))
-                    selectedPixel.green = UInt8(max(0,min(255,newGreen)))
-                    selectedPixel.blue = UInt8(max(0,min(255,newBlue)))
-                    imageInRGBA!.pixels[arrayIndex] = selectedPixel
-                }
+            iterateAndApplyFilter() {
+                    var pixel = $3
+                    let newRed = 255 - Int(pixel.red)
+                    let newGreen = 255 - Int(pixel.green)
+                    let newBlue = 255 - Int(pixel.blue)
+                    pixel.red = UInt8(max(0,min(255,newRed)))
+                    pixel.green = UInt8(max(0,min(255,newGreen)))
+                    pixel.blue = UInt8(max(0,min(255,newBlue)))
+                    self.imageInRGBA!.pixels[$2] = pixel
             }
+            
         case "sepia":
             for y in 0..<imageInRGBA!.height{
                 for x in 0..<imageInRGBA!.width{
@@ -112,5 +155,45 @@ class ImageProcessor {
         }
         return imageInRGBA!.toUIImage()!
     }
+    
+    // Helper functions
+    
+    func calculateRGBAverages() {
+       
+        for y in 0..<imageInRGBA!.height {
+            for x in 0..<imageInRGBA!.width {
+                let index = y * imageInRGBA!.width + x
+                var pixel = imageInRGBA!.pixels[index]
+                totalRed += Int(pixel.red)
+                totalGreen += Int(pixel.green)
+                totalBlue += Int(pixel.blue)
+            }
+        }
+        
+        pixelsCount = imageInRGBA!.pixels.count
+        
+        avgRed = totalRed/pixelsCount
+        avgGreen = totalGreen/pixelsCount
+        avgBlue = totalBlue/pixelsCount
+
+    }
+    
+
+    //Helper function to iterate thru each pixel
+    
+    func iterateAndApplyFilter( filter: (Int,Int, Int, Pixel) -> Void) {
+        for y in 0..<imageInRGBA!.height {
+            for x in 0..<imageInRGBA!.width {
+                let index = y * imageInRGBA!.width + x
+                let pixel = imageInRGBA!.pixels[index]
+    
+                filter(x,y, index, pixel)
+    
+            }
+        }
+        
+        
+    }
+    
     
 }

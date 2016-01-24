@@ -53,6 +53,9 @@
                                                     <constraint firstAttribute="height" constant="44" id="KFk-FH-sCY"/>
                                                 </constraints>
                                                 <state key="normal" title="Compare"/>
+                                                <connections>
+                                                    <action selector="onCompare:" destination="BYZ-38-t0r" eventType="touchUpInside" id="CUk-ec-Jd6"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5w7-37-R0E">
                                                 <rect key="frame" x="450" y="0.0" width="150" height="44"/>
@@ -112,18 +115,30 @@
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DoH-VC-bJP">
                                     <rect key="frame" x="48" y="0.0" width="48" height="128"/>
                                     <state key="normal" title="Green"/>
+                                    <connections>
+                                        <action selector="onGreenFilter:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Vam-8r-lKg"/>
+                                    </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tiZ-LB-YXO">
                                     <rect key="frame" x="96" y="0.0" width="48" height="128"/>
                                     <state key="normal" title="Blue"/>
+                                    <connections>
+                                        <action selector="onBlueFilter:" destination="BYZ-38-t0r" eventType="touchUpInside" id="WJf-gy-zzA"/>
+                                    </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SEv-4a-Tb0">
                                     <rect key="frame" x="144" y="0.0" width="48" height="128"/>
-                                    <state key="normal" title="Yellow"/>
+                                    <state key="normal" title="Gray"/>
+                                    <connections>
+                                        <action selector="onGrayFilter:" destination="BYZ-38-t0r" eventType="touchUpInside" id="2Mi-cY-pnq"/>
+                                    </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dno-of-rZk">
                                     <rect key="frame" x="192" y="0.0" width="48" height="128"/>
-                                    <state key="normal" title="Purple"/>
+                                    <state key="normal" title="Invert"/>
+                                    <connections>
+                                        <action selector="onInvertFilter:" destination="BYZ-38-t0r" eventType="touchUpInside" id="HYL-c8-KFE"/>
+                                    </connections>
                                 </button>
                             </subviews>
                         </stackView>
