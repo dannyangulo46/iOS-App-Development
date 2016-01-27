@@ -20,6 +20,10 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sample" translatesAutoresizingMaskIntoConstraints="NO" id="zAY-cX-Tol">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <gestureRecognizers/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="Jbr-Oj-ByW" appends="YES" id="kT7-RS-PXr"/>
+                                </connections>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LYM-0e-8OV">
                                 <rect key="frame" x="0.0" y="556" width="600" height="44"/>
@@ -92,8 +96,9 @@
                     </view>
                     <connections>
                         <outlet property="bottomMenu" destination="LYM-0e-8OV" id="nJC-W6-O4f"/>
+                        <outlet property="compareButton" destination="QRX-dn-slF" id="Sq0-Xc-KNC"/>
                         <outlet property="filterButton" destination="nkd-AF-oov" id="kHS-rh-rD2"/>
-                        <outlet property="imageView" destination="zAY-cX-Tol" id="qGS-65-mWu"/>
+                        <outlet property="imageView" destination="zAY-cX-Tol" id="xK0-DI-sSg"/>
                         <outlet property="secondaryMenu" destination="lEm-f8-U8d" id="w3f-Ly-WL8"/>
                     </connections>
                 </viewController>
@@ -144,6 +149,7 @@
                         </stackView>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <gestureRecognizers/>
                     <constraints>
                         <constraint firstItem="OCq-pn-NZU" firstAttribute="leading" secondItem="lEm-f8-U8d" secondAttribute="leading" id="7yO-v5-Kd6"/>
                         <constraint firstAttribute="trailing" secondItem="OCq-pn-NZU" secondAttribute="trailing" id="F7v-3y-9qM"/>
@@ -151,6 +157,11 @@
                         <constraint firstAttribute="bottom" secondItem="OCq-pn-NZU" secondAttribute="bottom" id="iJ0-4N-sYY"/>
                     </constraints>
                 </view>
+                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.10000000000000001" id="Jbr-Oj-ByW">
+                    <connections>
+                        <action selector="onImagePressAndRelease:" destination="BYZ-38-t0r" id="Xyo-ee-gtW"/>
+                    </connections>
+                </pongPressGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="566" y="420"/>
         </scene>

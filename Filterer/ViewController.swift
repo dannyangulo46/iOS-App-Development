@@ -18,6 +18,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     @IBOutlet weak var bottomMenu: UIView!
     
+    @IBOutlet weak var compareButton: UIButton!
+    
+    
     var originalImage: UIImage?
     var tempImage: UIImage?
     var imageFiltered: ImageProcessor?
@@ -27,9 +30,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        print("ViewDidLoad Finished")
+        imageView.userInteractionEnabled = true
         
         secondaryMenu.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
         secondaryMenu.translatesAutoresizingMaskIntoConstraints = false
+        compareButton.enabled = false
         
         originalImage = imageView.image
         imageFiltered = ImageProcessor(imageInput: imageView.image!)
@@ -52,10 +58,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
     let actionSheetVC = UIAlertController(title: "NewPhoto", message: nil, preferredStyle: .ActionSheet)
         
-        actionSheetVC.addAction(UIAlertAction(title: "Camera", style: .Default, handler: { action in
-            self.showCamera()
+        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera) {
+            actionSheetVC.addAction(UIAlertAction(title: "Camera", style: .Default, handler: { action in
+                self.showCamera()
         
-        }))
+            }))
+        }
         
         actionSheetVC.addAction(UIAlertAction(title: "Album", style: .Default, handler: { action in
             self.showAlbum()
@@ -95,6 +103,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
             imageView.image = image
             originalImage = image
+            tempImage = image
+            if compareButton.selected {
+                compareButton.selected = false
+                compareButton .enabled = false
+                filterButton.enabled = true
+            }
             imageFiltered?.imageInRGBA = RGBAImage(image: originalImage!)
         }
     }
@@ -103,22 +117,46 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         dismissViewControllerAnimated(true, completion: nil)
     }
     
-    // MARK: - Action when compare button is pressed
+    // MARK: - Action when compare button is pressed or image is tapped
     
     
     @IBAction func onCompare(sender: UIButton) {
+      
         if (sender.selected) {
         
             imageView.image = tempImage!
             sender.selected = false
+            filterButton.enabled = true
         } else {
             tempImage = imageView.image
             imageView.image = originalImage
             sender.selected = true
+            filterButton.enabled = false
+            if filterButton.selected {
+                hideSecondaryMenu()
+                filterButton.selected = false
+            }
         }
         
     }
+    
+    
+    @IBAction func onImagePressAndRelease(sender: UILongPressGestureRecognizer) {
+    
+        if (sender.state == UIGestureRecognizerState.Began) {
+            tempImage = imageView.image
+           imageView.image = originalImage
+     
         
+        }
+    
+        if (sender.state == UIGestureRecognizerState.Ended) {
+            imageView.image = tempImage
+          
+        }
+        
+    }
+    
     
     // MARK: - Show Filters and apply filters when buttons are pressed
     
@@ -140,27 +178,33 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBAction func onRedFilter(sender: UIButton) {
         
         imageView.image = imageFiltered?.applyFilter("red")
-     }
+        compareButton.enabled = true
+    }
     
     @IBAction func onGreenFilter(sender: UIButton) {
         
          imageView.image = imageFiltered?.applyFilter("green")
-     }
+        compareButton.enabled = true
+    }
     
     @IBAction func onBlueFilter(sender: UIButton) {
         
          imageView.image = imageFiltered?.applyFilter("blue")
+        compareButton.enabled = true
     }
     
     @IBAction func onGrayFilter(sender: UIButton) {
         
         imageView.image = imageFiltered?.applyFilter("gray")
+        compareButton.enabled = true
     }
     
     @IBAction func onInvertFilter(sender: UIButton) {
         
         imageView.image = imageFiltered?.applyFilter("invert")
+        compareButton.enabled = true
     }
+    
     
     
     
