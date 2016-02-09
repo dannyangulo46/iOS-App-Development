@@ -20,6 +20,19 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     @IBOutlet weak var compareButton: UIButton!
     
+    @IBOutlet var originalImageLabel: UILabel!
+    
+    var originalImageOnDisplay: Bool = true  {
+        didSet {
+            if originalImageOnDisplay == true {
+                showOriginalImageLabel()
+            } else {
+                hideOriginalImageLabel()
+            }
+        }
+    }
+    
+    
     
     var originalImage: UIImage?
     var tempImage: UIImage?
@@ -39,6 +52,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         originalImage = imageView.image
         imageFiltered = ImageProcessor(imageInput: imageView.image!)
+        
+        originalImageLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        showOriginalImageLabel() //Test
 
     }
 
@@ -127,11 +144,13 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             imageView.image = tempImage!
             sender.selected = false
             filterButton.enabled = true
+            originalImageOnDisplay = false
         } else {
             tempImage = imageView.image
             imageView.image = originalImage
             sender.selected = true
             filterButton.enabled = false
+            originalImageOnDisplay = true
             if filterButton.selected {
                 hideSecondaryMenu()
                 filterButton.selected = false
@@ -179,33 +198,36 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         imageView.image = imageFiltered?.applyFilter("red")
         compareButton.enabled = true
+        originalImageOnDisplay = false
     }
     
     @IBAction func onGreenFilter(sender: UIButton) {
         
          imageView.image = imageFiltered?.applyFilter("green")
         compareButton.enabled = true
+        originalImageOnDisplay = false
     }
     
     @IBAction func onBlueFilter(sender: UIButton) {
         
          imageView.image = imageFiltered?.applyFilter("blue")
         compareButton.enabled = true
+        originalImageOnDisplay = false
     }
     
     @IBAction func onGrayFilter(sender: UIButton) {
         
         imageView.image = imageFiltered?.applyFilter("gray")
         compareButton.enabled = true
+        originalImageOnDisplay = false
     }
     
     @IBAction func onInvertFilter(sender: UIButton) {
         
         imageView.image = imageFiltered?.applyFilter("invert")
         compareButton.enabled = true
+        originalImageOnDisplay = false
     }
-    
-    
     
     
     
@@ -252,6 +274,41 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     }
 
+    func showOriginalImageLabel() {
+    
+         view.addSubview(originalImageLabel)
+        
+        let widthScale: CGFloat =   imageView.frame.size.width / imageView.image!.size.width
+        let heightScale: CGFloat =  imageView.frame.size.height / imageView.image!.size.height
+        
+        let minScale: CGFloat = min(widthScale, heightScale)
+        
+        let verticalConstant: CGFloat = (imageView.image!.size.height) * minScale/2
+        
+        
+        print(verticalConstant)
+        print(heightScale)
+        print(imageView.image!.size.height*widthScale)
+        print(imageView.frame.size.width)
+        
+        //let topConstraint = originalImageLabel.topAnchor.constraintEqualToAnchor(imageView.topAnchor)
+        let leftConstraint = originalImageLabel.leftAnchor.constraintEqualToAnchor(view.leftAnchor)
+        let rightConstraint = originalImageLabel.rightAnchor.constraintEqualToAnchor(view.rightAnchor)
+        let heightConstraint = originalImageLabel.heightAnchor.constraintEqualToConstant(44)
+        
+        let verticalPosition = NSLayoutConstraint(item: originalImageLabel, attribute: .Top, relatedBy: .Equal, toItem: imageView, attribute: .CenterY, multiplier: 1, constant:0)
+        
+        NSLayoutConstraint.activateConstraints([rightConstraint, leftConstraint, heightConstraint, verticalPosition])
+
+        view.layoutIfNeeded()
+        
+        
+        
+    }
+    
+    func hideOriginalImageLabel() {
+        originalImageLabel.removeFromSuperview()
+    }
     
     
 }
