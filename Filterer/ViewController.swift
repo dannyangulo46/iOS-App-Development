@@ -24,6 +24,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     @IBOutlet var originalImageLabel: UILabel!
     
+    @IBOutlet weak var editButton: UIButton!
+    
+    @IBOutlet var editSlider: UISlider!
+    
+    
     
     var originalImageOnDisplay: Bool = true  {
         didSet {
@@ -52,22 +57,17 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         secondaryMenu.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
         secondaryMenu.translatesAutoresizingMaskIntoConstraints = false
         compareButton.enabled = false
-        
+        editButton.enabled = false
         originalImage = topImageView.image
         imageFiltered = ImageProcessor(imageInput: topImageView.image!)
-        
         originalImageLabel.translatesAutoresizingMaskIntoConstraints = false
-        
+        editSlider.translatesAutoresizingMaskIntoConstraints = false
         showOriginalImageLabel() //Test
 
     }
-
-    
     
     
     // MARK: - Actions when buttons are pressed
-    
-    
 
     @IBAction func onNewPhoto(sender: UIButton) {
         
@@ -76,20 +76,14 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera) {
             actionSheetVC.addAction(UIAlertAction(title: "Camera", style: .Default, handler: { action in
                 self.showCamera()
-        
             }))
         }
-        
         actionSheetVC.addAction(UIAlertAction(title: "Album", style: .Default, handler: { action in
             self.showAlbum()
-            
         }))
         
         actionSheetVC.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-        
         presentViewController(actionSheetVC, animated: true, completion: nil)
-        
-        
     }
     
     
@@ -97,18 +91,13 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         let cameraPicker = UIImagePickerController()
         cameraPicker.delegate = self
         cameraPicker.sourceType = .Camera
-        
         presentViewController(cameraPicker, animated: true, completion: nil)
-        
-        
     }
-    
     
     func showAlbum() {
         let cameraPicker = UIImagePickerController()
         cameraPicker.delegate = self
         cameraPicker.sourceType = .PhotoLibrary
-        
         presentViewController(cameraPicker, animated: true, completion: nil)
         
     }
@@ -259,10 +248,30 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             }
         }
         compareButton.enabled = true
+        editButton.enabled = true
         originalImageOnDisplay = false
     }
     
     
+    @IBAction func onEdit(sender: UIButton) {
+        
+        if filterButton.selected == true {
+            hideSecondaryMenu()
+            filterButton.selected = false
+        }
+        
+        if sender.selected {
+            hideEditSlider()
+            sender.selected = false
+        } else {
+            showEditSlider()
+            sender.selected = true
+        }
+        
+        
+        
+        
+    }
     
     @IBAction func onShare(sender: UIButton) {
         
@@ -280,7 +289,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         presentViewController(activityController, animated: true, completion: nil)
     }
     
- // MARK: Show or Hide Secondary Menu
+ // MARK: Show or hide other views
     
     func showSecondaryMenu() {
         
@@ -304,8 +313,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     func hideSecondaryMenu() {
-        
-        
         UIView.animateWithDuration(0.4, animations: {
             self.secondaryMenu.alpha = 0
             })  { completed in
@@ -314,10 +321,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 }
         
         }
-    
-    
     }
-
     
     func showOriginalImageLabel() {
     
@@ -340,19 +344,28 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         let leftConstraint = originalImageLabel.leftAnchor.constraintEqualToAnchor(view.leftAnchor)
         let rightConstraint = originalImageLabel.rightAnchor.constraintEqualToAnchor(view.rightAnchor)
         let heightConstraint = originalImageLabel.heightAnchor.constraintEqualToConstant(44)
-        
         let verticalPosition = NSLayoutConstraint(item: originalImageLabel, attribute: .Top, relatedBy: .Equal, toItem: imageView, attribute: .CenterY, multiplier: 1, constant:0)
-        
         NSLayoutConstraint.activateConstraints([rightConstraint, leftConstraint, heightConstraint, verticalPosition])
-
         view.layoutIfNeeded()
-        
-        
-        
     }
     
     func hideOriginalImageLabel() {
         originalImageLabel.removeFromSuperview()
+    }
+    
+    func showEditSlider() {
+        view.addSubview(editSlider)
+        let bottomConstraint = editSlider.bottomAnchor.constraintEqualToAnchor(bottomMenu.topAnchor)
+        let leftConstraint = editSlider.leftAnchor.constraintEqualToAnchor(view.leftAnchor)
+        let rightConstraint = editSlider.rightAnchor.constraintEqualToAnchor(view.rightAnchor)
+        let heightConstraint = editSlider.heightAnchor.constraintEqualToConstant(44)
+        NSLayoutConstraint.activateConstraints([bottomConstraint, leftConstraint, rightConstraint, heightConstraint])
+        view.layoutIfNeeded()
+        
+    }
+    
+    func hideEditSlider() {
+        editSlider.removeFromSuperview()
     }
     
     

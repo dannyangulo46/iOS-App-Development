@@ -32,7 +32,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b0e-lV-gUc">
-                                                <rect key="frame" x="0.0" y="0.0" width="150" height="44"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="120" height="44"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="44" id="rld-Nv-nDh"/>
                                                 </constraints>
@@ -42,7 +42,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nkd-AF-oov">
-                                                <rect key="frame" x="150" y="0.0" width="150" height="44"/>
+                                                <rect key="frame" x="120" y="0.0" width="120" height="44"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="44" id="TXj-6Z-xaV"/>
                                                 </constraints>
@@ -51,8 +51,18 @@
                                                     <action selector="onFilter:" destination="BYZ-38-t0r" eventType="touchUpInside" id="k7v-Cl-aSQ"/>
                                                 </connections>
                                             </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iQi-gw-0So">
+                                                <rect key="frame" x="240" y="0.0" width="120" height="44"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="44" id="y02-IK-j81"/>
+                                                </constraints>
+                                                <state key="normal" title="Edit"/>
+                                                <connections>
+                                                    <action selector="onEdit:" destination="BYZ-38-t0r" eventType="touchUpInside" id="kAw-8h-b5C"/>
+                                                </connections>
+                                            </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QRX-dn-slF">
-                                                <rect key="frame" x="300" y="0.0" width="150" height="44"/>
+                                                <rect key="frame" x="360" y="0.0" width="120" height="44"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="44" id="KFk-FH-sCY"/>
                                                 </constraints>
@@ -62,7 +72,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5w7-37-R0E">
-                                                <rect key="frame" x="450" y="0.0" width="150" height="44"/>
+                                                <rect key="frame" x="480" y="0.0" width="120" height="44"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="44" id="qVN-8a-BL0"/>
                                                 </constraints>
@@ -104,6 +114,8 @@
                     <connections>
                         <outlet property="bottomMenu" destination="LYM-0e-8OV" id="nJC-W6-O4f"/>
                         <outlet property="compareButton" destination="QRX-dn-slF" id="Sq0-Xc-KNC"/>
+                        <outlet property="editButton" destination="iQi-gw-0So" id="eFZ-Mc-OHs"/>
+                        <outlet property="editSlider" destination="P22-cq-yMH" id="sbG-87-YLe"/>
                         <outlet property="filterButton" destination="nkd-AF-oov" id="kHS-rh-rD2"/>
                         <outlet property="imageView" destination="zAY-cX-Tol" id="xK0-DI-sSg"/>
                         <outlet property="originalImageLabel" destination="2Mp-Yd-p8A" id="fL7-Ac-u5i"/>
@@ -174,6 +186,10 @@
                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" id="P22-cq-yMH">
+                    <rect key="frame" x="0.0" y="0.0" width="226" height="31"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                </slider>
                 <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.10000000000000001" id="Jbr-Oj-ByW">
                     <connections>
                         <action selector="onImagePressAndRelease:" destination="BYZ-38-t0r" id="Xyo-ee-gtW"/>
