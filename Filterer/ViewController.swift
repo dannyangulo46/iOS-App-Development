@@ -12,6 +12,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 
     @IBOutlet weak var imageView: UIImageView!
     
+    @IBOutlet var topImageView: UIImageView!
+    
     @IBOutlet var secondaryMenu: UIView!
     
     @IBOutlet weak var filterButton: UIButton!
@@ -21,6 +23,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBOutlet weak var compareButton: UIButton!
     
     @IBOutlet var originalImageLabel: UILabel!
+    
     
     var originalImageOnDisplay: Bool = true  {
         didSet {
@@ -50,8 +53,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         secondaryMenu.translatesAutoresizingMaskIntoConstraints = false
         compareButton.enabled = false
         
-        originalImage = imageView.image
-        imageFiltered = ImageProcessor(imageInput: imageView.image!)
+        originalImage = topImageView.image
+        imageFiltered = ImageProcessor(imageInput: topImageView.image!)
         
         originalImageLabel.translatesAutoresizingMaskIntoConstraints = false
         
@@ -60,11 +63,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
 
     
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     
     
     // MARK: - Actions when buttons are pressed
@@ -118,14 +116,19 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         dismissViewControllerAnimated(true, completion: nil)
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            imageView.image = image
+            if topImageView.alpha == 1 {
+                topImageView.image = image
+            } else {
+                imageView.image = image
+            }
             originalImage = image
             tempImage = image
+            originalImageOnDisplay = true
             if compareButton.selected {
                 compareButton.selected = false
-                compareButton .enabled = false
                 filterButton.enabled = true
             }
+                compareButton .enabled = false
             imageFiltered?.imageInRGBA = RGBAImage(image: originalImage!)
         }
     }
@@ -140,14 +143,28 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBAction func onCompare(sender: UIButton) {
       
         if (sender.selected) {
-        
-            imageView.image = tempImage!
+            
+            if topImageView.alpha == 1 {
+                topImageView.image = tempImage!
+            } else {
+                imageView.image = tempImage!
+            }
+                
             sender.selected = false
             filterButton.enabled = true
             originalImageOnDisplay = false
+        
         } else {
-            tempImage = imageView.image
-            imageView.image = originalImage
+        
+            if topImageView.alpha == 1 {
+                tempImage = topImageView.image
+                topImageView.image = originalImage
+            } else {
+                tempImage = imageView.image
+                imageView.image = originalImage
+            
+            }
+            
             sender.selected = true
             filterButton.enabled = false
             originalImageOnDisplay = true
@@ -162,16 +179,31 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     @IBAction func onImagePressAndRelease(sender: UILongPressGestureRecognizer) {
     
-        if (sender.state == UIGestureRecognizerState.Began) {
-            tempImage = imageView.image
-           imageView.image = originalImage
-     
         
-        }
-    
-        if (sender.state == UIGestureRecognizerState.Ended) {
-            imageView.image = tempImage
-          
+        if !compareButton.selected {
+        
+            if (sender.state == UIGestureRecognizerState.Began) {
+                if topImageView.alpha == 1 {
+                    tempImage = topImageView.image
+                    topImageView.image = originalImage
+                } else {
+                    tempImage = imageView.image
+                    imageView.image = originalImage
+                }
+                originalImageOnDisplay = true
+                
+            }
+            
+            if (sender.state == UIGestureRecognizerState.Ended) {
+                if topImageView.alpha == 1 {
+                    topImageView.image = tempImage
+                    originalImageOnDisplay = false
+                } else {
+                    imageView.image = tempImage
+                    originalImageOnDisplay = false
+                }
+                
+            }
         }
         
     }
@@ -180,51 +212,52 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     // MARK: - Show Filters and apply filters when buttons are pressed
     
     @IBAction func onFilter(sender: UIButton) {
-        
         if (sender.selected) {
             hideSecondaryMenu()
             sender.selected = false
-            
         } else {
             showSecondaryMenu()
             sender.selected = true
         }
-       
     }
-
-    
     
     @IBAction func onRedFilter(sender: UIButton) {
-        
-        imageView.image = imageFiltered?.applyFilter("red")
-        compareButton.enabled = true
-        originalImageOnDisplay = false
+        applyFilter("red")
     }
     
     @IBAction func onGreenFilter(sender: UIButton) {
-        
-         imageView.image = imageFiltered?.applyFilter("green")
-        compareButton.enabled = true
-        originalImageOnDisplay = false
+        applyFilter("green")
     }
     
     @IBAction func onBlueFilter(sender: UIButton) {
-        
-         imageView.image = imageFiltered?.applyFilter("blue")
-        compareButton.enabled = true
-        originalImageOnDisplay = false
+        applyFilter("blue")
     }
     
     @IBAction func onGrayFilter(sender: UIButton) {
-        
-        imageView.image = imageFiltered?.applyFilter("gray")
-        compareButton.enabled = true
-        originalImageOnDisplay = false
+        applyFilter("gray")
     }
     
     @IBAction func onInvertFilter(sender: UIButton) {
+        applyFilter("invert")
+    }
+    
+
+ // MARK: Apply Filter Helper Function
+    
+    func applyFilter(color: String) {
         
-        imageView.image = imageFiltered?.applyFilter("invert")
+        if topImageView.alpha == 1 {
+            imageView.image = imageFiltered?.applyFilter(color)
+            UIView.animateWithDuration(0.7){
+                self.topImageView.alpha = 0
+            }
+        } else {
+            topImageView.image = imageFiltered?.applyFilter(color)
+            UIView.animateWithDuration(0.7) {
+                self.topImageView.alpha = 1
+                
+            }
+        }
         compareButton.enabled = true
         originalImageOnDisplay = false
     }
@@ -232,11 +265,22 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     
     @IBAction func onShare(sender: UIButton) {
-        let activityController = UIActivityViewController(activityItems: [imageView.image!], applicationActivities: nil)
+        
+        let imageDisplayed: UIImage?
+        
+        if topImageView.alpha == 1 {
+            imageDisplayed = topImageView.image!
+        } else {
+            imageDisplayed = imageView.image!
+        }
+    
+        
+        let activityController = UIActivityViewController(activityItems: [imageDisplayed!], applicationActivities: nil)
         
         presentViewController(activityController, animated: true, completion: nil)
     }
     
+ // MARK: Show or Hide Secondary Menu
     
     func showSecondaryMenu() {
         
@@ -274,22 +318,23 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     }
 
+    
     func showOriginalImageLabel() {
     
          view.addSubview(originalImageLabel)
-        
-        let widthScale: CGFloat =   imageView.frame.size.width / imageView.image!.size.width
-        let heightScale: CGFloat =  imageView.frame.size.height / imageView.image!.size.height
-        
-        let minScale: CGFloat = min(widthScale, heightScale)
-        
-        let verticalConstant: CGFloat = (imageView.image!.size.height) * minScale/2
-        
-        
-        print(verticalConstant)
-        print(heightScale)
-        print(imageView.image!.size.height*widthScale)
-        print(imageView.frame.size.width)
+//        
+//        let widthScale: CGFloat =   imageView.frame.size.width / imageView.image!.size.width
+//        let heightScale: CGFloat =  imageView.frame.size.height / imageView.image!.size.height
+//        
+//        let minScale: CGFloat = min(widthScale, heightScale)
+//        
+//        let verticalConstant: CGFloat = (imageView.image!.size.height) * minScale/2
+//        
+//        
+//        print(verticalConstant)
+//        print(heightScale)
+//        print(imageView.image!.size.height*widthScale)
+//        print(imageView.frame.size.width)
         
         //let topConstraint = originalImageLabel.topAnchor.constraintEqualToAnchor(imageView.topAnchor)
         let leftConstraint = originalImageLabel.leftAnchor.constraintEqualToAnchor(view.leftAnchor)

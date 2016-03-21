@@ -17,7 +17,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sample" translatesAutoresizingMaskIntoConstraints="NO" id="zAY-cX-Tol">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="zAY-cX-Tol">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <gestureRecognizers/>
@@ -82,16 +82,23 @@
                                     <constraint firstItem="Bx3-kU-suN" firstAttribute="top" secondItem="LYM-0e-8OV" secondAttribute="top" id="sZy-kd-zb9"/>
                                 </constraints>
                             </view>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sample" translatesAutoresizingMaskIntoConstraints="NO" id="nCO-vg-81F">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="nCO-vg-81F" secondAttribute="trailing" id="5Ul-4c-Lfi"/>
                             <constraint firstItem="LYM-0e-8OV" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="7MB-mu-JzV"/>
                             <constraint firstAttribute="trailing" secondItem="zAY-cX-Tol" secondAttribute="trailing" id="AmZ-ws-pwf"/>
                             <constraint firstItem="zAY-cX-Tol" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="CfU-yV-sOK"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="LYM-0e-8OV" secondAttribute="bottom" id="L0u-DW-FkQ"/>
                             <constraint firstItem="zAY-cX-Tol" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="aUv-4F-5d0"/>
                             <constraint firstItem="LYM-0e-8OV" firstAttribute="top" secondItem="zAY-cX-Tol" secondAttribute="bottom" id="awj-18-4Xt"/>
+                            <constraint firstItem="nCO-vg-81F" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="eTE-qi-rGO"/>
+                            <constraint firstItem="nCO-vg-81F" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="lfp-IL-o0A"/>
                             <constraint firstAttribute="trailing" secondItem="LYM-0e-8OV" secondAttribute="trailing" id="sU7-Ae-llW"/>
+                            <constraint firstItem="LYM-0e-8OV" firstAttribute="top" secondItem="nCO-vg-81F" secondAttribute="bottom" id="swv-0b-5bH"/>
                         </constraints>
                     </view>
                     <connections>
@@ -101,6 +108,7 @@
                         <outlet property="imageView" destination="zAY-cX-Tol" id="xK0-DI-sSg"/>
                         <outlet property="originalImageLabel" destination="2Mp-Yd-p8A" id="fL7-Ac-u5i"/>
                         <outlet property="secondaryMenu" destination="lEm-f8-U8d" id="w3f-Ly-WL8"/>
+                        <outlet property="topImageView" destination="nCO-vg-81F" id="nJ5-1Y-ZUw"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
