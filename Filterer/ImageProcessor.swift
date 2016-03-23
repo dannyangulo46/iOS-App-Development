@@ -25,7 +25,8 @@ class ImageProcessor {
     var avgBlue: Int = 0
     var pixelsCount: Int = 0
     
-    
+    var priorIntensityValue = 0
+    var incrementalIntensity = 0
     
     // initialization of class
     init(imageInput: UIImage){
@@ -38,27 +39,17 @@ class ImageProcessor {
     
     
     // method that applies the filters at default intensity using String input (to every pixel of image)
-    func applyFilter(filter: String) -> UIImage{
+    func applyFilter(filter: String, intensity: Int=3) -> UIImage{
+  
+        
         switch filter{
         case "red":
-           
-//            for y in 0..<imageInRGBA!.height{
-//                for x in 0..<imageInRGBA!.width{
-//                    let index = y * imageInRGBA!.width + x
-//                    var pixel = imageInRGBA!.pixels[index]
-//                    let redDiff = Int(pixel.red) - avgRed
-//                    if (redDiff>0){
-//                        pixel.red = UInt8(max(0,min(255,avgRed+redDiff*5)))
-//                        imageInRGBA!.pixels[index] = pixel
-//                    }
-//                }
-//            }
            
             iterateAndApplyFilter() {
                 var pixel = $3
                 let redDiff = Int (pixel.red) - self.avgRed
                 if (redDiff>0) {
-                    pixel.red = UInt8(max(0,min(255, self.avgRed+redDiff*5)))
+                    pixel.red = UInt8(max(0,min(255, self.avgRed+redDiff*intensity)))
                     self.imageInRGBA!.pixels[$2] = pixel
                 }
                 
@@ -70,7 +61,7 @@ class ImageProcessor {
                 var pixel = $3
                 let greenDiff = Int (pixel.green) - self.avgGreen
                 if (greenDiff>0) {
-                    pixel.green = UInt8(max(0,min(255, self.avgGreen+greenDiff*5)))
+                    pixel.green = UInt8(max(0,min(255, self.avgGreen+greenDiff*intensity)))
                     self.imageInRGBA!.pixels[$2] = pixel
                 }
                 
@@ -83,7 +74,7 @@ class ImageProcessor {
                 var pixel = $3
                 let blueDiff = Int (pixel.blue) - self.avgBlue
                 if (blueDiff>0) {
-                    pixel.blue = UInt8(max(0,min(255, self.avgBlue+blueDiff*5)))
+                    pixel.blue = UInt8(max(0,min(255, self.avgBlue+blueDiff*intensity)))
                     self.imageInRGBA!.pixels[$2] = pixel
                 }
                 
@@ -138,19 +129,23 @@ class ImageProcessor {
                 }
             }
         case "bright":
+            
+            incrementalIntensity = intensity - priorIntensityValue
+            
             for y in 0..<imageInRGBA!.height{
                 for x in 0..<imageInRGBA!.width{
                     let arrayIndex = y * imageInRGBA!.width + x
                     var selectedPixel = imageInRGBA!.pixels[arrayIndex]
-                    let red = Int(selectedPixel.red) * 2
-                    let green = Int(selectedPixel.green) * 2
-                    let blue = Int(selectedPixel.blue) * 2
+                    let red = Int(selectedPixel.red) + incrementalIntensity
+                    let green = Int(selectedPixel.green) + incrementalIntensity
+                    let blue = Int(selectedPixel.blue) + incrementalIntensity
                     selectedPixel.red = UInt8(max(0,min(255,red)))
                     selectedPixel.green = UInt8(max(0,min(255,green)))
                     selectedPixel.blue = UInt8(max(0,min(255,blue)))
                     imageInRGBA!.pixels[arrayIndex] = selectedPixel
                 }
             }
+            priorIntensityValue = intensity
         default: print("ERROR: No filter selected. Could not apply filter.") ;break; // break the switch in case of error
         }
         return imageInRGBA!.toUIImage()!

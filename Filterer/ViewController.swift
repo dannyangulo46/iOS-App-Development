@@ -194,7 +194,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 
             }
         }
-        
     }
     
     
@@ -205,6 +204,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             hideSecondaryMenu()
             sender.selected = false
         } else {
+            if editButton.selected {
+                hideEditSlider()
+                editButton.selected = false
+            }
+            
             showSecondaryMenu()
             sender.selected = true
         }
@@ -230,7 +234,23 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         applyFilter("invert")
     }
     
-
+    
+    @IBAction func onIntensitySlide(sender: UISlider) {
+        
+        let currentValue = Int(editSlider.value)
+        
+        print("The current value is \(currentValue)")
+      
+        if topImageView.alpha == 1 {
+            topImageView.image = imageFiltered?.applyFilter("bright", intensity: currentValue)
+            
+        } else {
+            imageView.image = imageFiltered?.applyFilter("bright", intensity: currentValue)
+            
+        }
+    }
+    
+ 
  // MARK: Apply Filter Helper Function
     
     func applyFilter(color: String) {
@@ -250,6 +270,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         compareButton.enabled = true
         editButton.enabled = true
         originalImageOnDisplay = false
+        imageFiltered?.priorIntensityValue=0
+        editSlider.value = 50
     }
     
     
@@ -263,13 +285,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         if sender.selected {
             hideEditSlider()
             sender.selected = false
+            //editSlider.value = 50
+            //imageFiltered?.priorIntensityValue = 0
         } else {
             showEditSlider()
             sender.selected = true
         }
-        
-        
-        
         
     }
     
