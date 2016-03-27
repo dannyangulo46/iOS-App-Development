@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
 
     @IBOutlet weak var imageView: UIImageView!
     
@@ -28,6 +28,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     @IBOutlet var editSlider: UISlider!
     
+    @IBOutlet var collectionViewMenu: UICollectionView!
+    
+    var buttonImages = [UIImage]()
     
     
     var originalImageOnDisplay: Bool = true  {
@@ -56,15 +59,36 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         secondaryMenu.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
         secondaryMenu.translatesAutoresizingMaskIntoConstraints = false
+        
         compareButton.enabled = false
         editButton.enabled = false
+        
         originalImage = topImageView.image
-        imageFiltered = ImageProcessor(imageInput: topImageView.image!)
+        originalImageLabel.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
         originalImageLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        imageFiltered = ImageProcessor(imageInput: topImageView.image!)
+        
+        
         editSlider.translatesAutoresizingMaskIntoConstraints = false
+        collectionViewMenu.translatesAutoresizingMaskIntoConstraints = false
+        
+        addPicturesToCollectionViewModel()
+        
+        collectionViewMenu.delegate = self
+        collectionViewMenu.dataSource = self
+        collectionViewMenu.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
+        
         showOriginalImageLabel() //Test
-
+       
     }
+   
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        collectionViewMenu.reloadData()
+    }
+    
     
     
     // MARK: - Actions when buttons are pressed
@@ -201,7 +225,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     @IBAction func onFilter(sender: UIButton) {
         if (sender.selected) {
-            hideSecondaryMenu()
+            //hideSecondaryMenu()
+            hideSecondaryMenuCV()
             sender.selected = false
         } else {
             if editButton.selected {
@@ -209,7 +234,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 editButton.selected = false
             }
             
-            showSecondaryMenu()
+            //showSecondaryMenu()
+            showSecondaryMenuCV()
             sender.selected = true
         }
     }
@@ -231,8 +257,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     @IBAction func onInvertFilter(sender: UIButton) {
-        applyFilter("invert")
-    }
+       applyFilter("invert")
+     }
     
     
     @IBAction func onIntensitySlide(sender: UISlider) {
@@ -250,7 +276,43 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         }
     }
     
- 
+ // MARK: Collection View Secondary Menu DataSource and Delegate Methods
+    
+     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        print("Number of images:\(buttonImages.count)")
+        
+        return buttonImages.count
+    }
+    
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Cell", forIndexPath: indexPath) as! CollectionViewCellWithImageCollectionViewCell
+        
+        let filterPicture = buttonImages[indexPath.item]
+        
+        cell.imageView.image = filterPicture
+        
+        return cell
+    }
+    
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        
+        let filterName = indexPath.item
+        
+        switch filterName {
+            case 0: applyFilter("red")
+            case 1: applyFilter("green")
+            case 2: applyFilter("blue")
+            case 3: applyFilter("gray")
+            case 4: applyFilter("invert")
+            case 5: applyFilter("sepia")
+            case 6: applyFilter("brighter")
+            default:
+            print("Did not find filter name")
+        }
+    }
+    
+    
  // MARK: Apply Filter Helper Function
     
     func applyFilter(color: String) {
@@ -310,6 +372,21 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         presentViewController(activityController, animated: true, completion: nil)
     }
     
+    
+    func addPicturesToCollectionViewModel() {
+    
+        buttonImages.append(UIImage(named: "red")!)
+        buttonImages.append(UIImage(named: "green")!)
+        buttonImages.append(UIImage(named: "blue")!)
+        buttonImages.append(UIImage(named: "gray")!)
+        buttonImages.append(UIImage(named: "invert")!)
+        buttonImages.append(UIImage(named: "sepia")!)
+        buttonImages.append(UIImage(named: "brighter")!)
+    }
+    
+    
+    
+    
  // MARK: Show or hide other views
     
     func showSecondaryMenu() {
@@ -343,6 +420,43 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         }
     }
+    
+    func showSecondaryMenuCV() {
+        
+        view.addSubview(collectionViewMenu)
+        
+        let bottomConstraint = collectionViewMenu.bottomAnchor.constraintEqualToAnchor(bottomMenu.topAnchor)
+        let leftConstraint = collectionViewMenu.leftAnchor.constraintEqualToAnchor(view.leftAnchor)
+        let rightConstraint = collectionViewMenu.rightAnchor.constraintEqualToAnchor(view.rightAnchor)
+        let heightConstraint = collectionViewMenu.heightAnchor.constraintEqualToConstant(44)
+        
+        NSLayoutConstraint.activateConstraints([bottomConstraint, leftConstraint, rightConstraint, heightConstraint])
+        
+        view.layoutIfNeeded()
+        
+        
+        
+        collectionViewMenu.alpha = 0
+        UIView.animateWithDuration(0.4){
+            self.collectionViewMenu.alpha = 1
+        }
+        
+        
+    }
+    
+    func hideSecondaryMenuCV() {
+        UIView.animateWithDuration(0.4, animations: {
+            self.collectionViewMenu.alpha = 0
+        })  { completed in
+            if completed == true {
+                self.collectionViewMenu.removeFromSuperview()
+            }
+            
+        }
+    }
+    
+    
+    
     
     func showOriginalImageLabel() {
     
@@ -391,4 +505,5 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     
 }
+
 

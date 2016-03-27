@@ -128,6 +128,21 @@ class ImageProcessor {
                     imageInRGBA!.pixels[arrayIndex] = selectedPixel
                 }
             }
+        case "brighter":
+            
+            for y in 0..<imageInRGBA!.height{
+                for x in 0..<imageInRGBA!.width{
+                    let arrayIndex = y * imageInRGBA!.width + x
+                    var selectedPixel = imageInRGBA!.pixels[arrayIndex]
+                    let red = Int(selectedPixel.red)*2
+                    let green = Int(selectedPixel.green)*2
+                    let blue = Int(selectedPixel.blue)*2
+                    selectedPixel.red = UInt8(max(0,min(255,red)))
+                    selectedPixel.green = UInt8(max(0,min(255,green)))
+                    selectedPixel.blue = UInt8(max(0,min(255,blue)))
+                    imageInRGBA!.pixels[arrayIndex] = selectedPixel
+                }
+            }
         case "bright":
             
             incrementalIntensity = intensity - priorIntensityValue
