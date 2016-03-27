@@ -77,7 +77,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         collectionViewMenu.delegate = self
         collectionViewMenu.dataSource = self
-        collectionViewMenu.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
+        //collectionViewMenu.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
         
         showOriginalImageLabel() //Test
        
@@ -131,8 +131,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
             if topImageView.alpha == 1 {
                 topImageView.image = image
+                imageView.image = nil
             } else {
                 imageView.image = image
+                topImageView.image = nil
             }
             originalImage = image
             tempImage = image
@@ -142,6 +144,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 filterButton.enabled = true
             }
                 compareButton .enabled = false
+                editButton.enabled = false
             imageFiltered?.imageInRGBA = RGBAImage(image: originalImage!)
         }
     }
@@ -182,7 +185,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             filterButton.enabled = false
             originalImageOnDisplay = true
             if filterButton.selected {
-                hideSecondaryMenu()
+                //hideSecondaryMenu()
+                hideSecondaryMenuCV()
                 filterButton.selected = false
             }
         }
@@ -193,7 +197,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBAction func onImagePressAndRelease(sender: UILongPressGestureRecognizer) {
     
         
-        if !compareButton.selected {
+        if !compareButton.selected && compareButton.enabled==true{
         
             if (sender.state == UIGestureRecognizerState.Began) {
                 if topImageView.alpha == 1 {
@@ -340,15 +344,15 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBAction func onEdit(sender: UIButton) {
         
         if filterButton.selected == true {
-            hideSecondaryMenu()
+            //hideSecondaryMenu()
+            hideSecondaryMenuCV()
             filterButton.selected = false
         }
         
         if sender.selected {
             hideEditSlider()
             sender.selected = false
-            //editSlider.value = 50
-            //imageFiltered?.priorIntensityValue = 0
+            
         } else {
             showEditSlider()
             sender.selected = true
@@ -476,6 +480,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 //        print(imageView.frame.size.width)
         
         //let topConstraint = originalImageLabel.topAnchor.constraintEqualToAnchor(imageView.topAnchor)
+        
         let leftConstraint = originalImageLabel.leftAnchor.constraintEqualToAnchor(view.leftAnchor)
         let rightConstraint = originalImageLabel.rightAnchor.constraintEqualToAnchor(view.rightAnchor)
         let heightConstraint = originalImageLabel.heightAnchor.constraintEqualToConstant(44)
